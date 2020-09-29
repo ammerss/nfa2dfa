@@ -7,9 +7,6 @@ class Delta :
     def delta2str(self) :
         #returns a readable delta
         return "delta{{" + str(self.start_state) + "}, " + str(self.input) + "} = {" + str(self.end_state) + "}" 
-        #s  = ",".join((str(n)) for n in self.start_state)
-        #e = ",".join((str(n)) for n in self.end_state)
-        #return "delta{{" + s + "}" + "," + self.input + "} = {" + e + "}"
 
     def add_start(self, s) :
         self.start_state = self.start_state.append(s)
@@ -80,19 +77,19 @@ def nfa2dfa (nfa) :
     #print(states)
     #for i in delta :
     #    print(i.delta2str())
-    end = determine_the_end_state(nfa,delta)
+    end = determine_the_end_state(nfa,states)
    
 
     dfa = DFA(states,nfa.I,delta,nfa.S,end)
     dfa.print()
 
-def determine_the_end_state(nfa,delta) :
+def determine_the_end_state(nfa,states) :
     end = []
-    for d in delta :
+    for s in states :
         temp = str(nfa.end_state()).replace("[", "")
         temp = temp.replace("]","")
-        if( temp in str(d.end_state))  :
-            end.append(d.end_state)
+        if( temp in str(s))  :
+            end.append(s)
     return end
 
             
@@ -105,6 +102,7 @@ def look_all_possible_next_states(nfa,s,i) :
         temp = temp.replace("]","")
         if (temp in str([s]) and n.input == i) :
             new = new + n.end_state
+    new=list(set(new))#get rid of dups        
     return new
 
 """
