@@ -34,7 +34,7 @@ class DFA:
             temp = str(k).replace("[", "")
             temp = temp.replace("]","")
             for d in self.D :
-                print("s and d",s,d.delta2str())
+                #print("s and d",s,d.delta2str())
                 if temp in str(d.start_state) and  ( str(i) in str(d.input) or (self.cnt!=0 and 'e' in str(d.input)) ) :
                     cl = cl + d.end_state
                     self.cnt = self.cnt + 1
