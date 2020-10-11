@@ -27,7 +27,28 @@ class DFA: #name is DFA but able to represent NFA as well
         self.F = _F #end_states 
         self.closure = [] #cl for each state
         self.cnt = 0
-    
+
+
+    #check whether 'self' is nfa or dfa
+    def driver(self,i):
+        is_nfa = False
+        for d in self.D :
+            for j in self.D :
+                if (d.start_state == j.start_state and d.input==j.input and d.end_state!=j.end_state) :
+                    is_nfa= True
+            if is_nfa :
+                break
+
+        if is_nfa : 
+            print("Reading nfa...")
+            dfa=nfa2dfa(self)
+            return dfa.read(i)
+        else : 
+            print("Reading dfa...")
+            return self.read(i)
+        
+
+
     #read strings for dfa
     def read(self,i,s=None, cnt=0) : #s = state and i = input string #??SSSSSSS
         if s is None :
@@ -231,5 +252,6 @@ dfa = nfa2dfa(nfa3)
 
 #read a string
 print("")
-result = dfa.read("01")
+print("")
+result = dfa.driver("01")
 print(result)
