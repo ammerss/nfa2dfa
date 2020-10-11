@@ -17,7 +17,7 @@ class Delta :
     def add_end(self,s) :
         self.end_state = self.end_state.append(s)
 
-class DFA:
+class DFA: #name is DFA but able to represent NFA as well
 
     def __init__(self, _Q, _I, _D, _S, _F):
         self.Q = _Q #states
@@ -27,6 +27,33 @@ class DFA:
         self.F = _F #end_states 
         self.closure = [] #cl for each state
         self.cnt = 0
+    
+    #read strings for dfa
+    def read(self,i,s=None, cnt=0) : #s = state and i = input string #??SSSSSSS
+        if s is None :
+            s=self.S
+            print("reading string :",i)
+        for d in self.D :
+            if (d.start_state == s and i[cnt]==str(d.input)) :
+                #print("cnt :",cnt)
+                #print("i[cnt]", i[cnt])
+                #print("start_state",s)
+                #print("next_state",d.end_state)
+                #print(str(d.end_state) in str(self.F))
+                #if str(self.F).find(str(d.end_state),1) :
+                if str(d.end_state) in str(self.F) :
+                    return "accept"
+                s = d.end_state
+                if (cnt<len(i)-1) :
+                    res = self.read(i,s,cnt+1)
+                    if ( res == "accept") :
+                        return "accept"
+                else :
+                    return "reject"
+                
+
+        return "reject"
+
 
     def cl_loop(self,s,i) :
         cl = []
@@ -47,8 +74,6 @@ class DFA:
         #for s in self.Q :
         cl = []
         cl = self.cl_loop(s,i)
-        #cl = cl + s
-        #print('cl',cl)
         cl=list(set(cl))
         return cl
 
@@ -114,6 +139,7 @@ def nfa2dfa (nfa) :
 
     dfa = DFA(states,nfa.I,delta,nfa.S,end)
     dfa.print()
+    return dfa
 
 def determine_the_end_state(nfa,states) :
     end = []
@@ -142,8 +168,9 @@ def look_all_possible_next_states(nfa,s,i) : # for each state
     #print('s i ',s,i,new)   
     return new
 
-"""
+
 #make nfas
+#lecture03 p.19
 Q = [(0),(1),(2),(3)]
 I = ['a','b']
 S = [(0)]
@@ -155,10 +182,10 @@ d.append(Delta([0],'b',[0]))
 d.append(Delta([1],'b',[2]))
 d.append(Delta([2],'b',[3]))
 nfa1 = DFA(Q ,I, d, S, F)
-"""
 
 
-"""
+
+
 q = [(0),(1),(2),(3)]
 i = ['a','b']
 s=[(0)]
@@ -172,10 +199,10 @@ d.append(Delta([1],'a',[3]))
 d.append(Delta([2],'b',[3]))
 d.append(Delta([3],'a',[3]))
 d.append(Delta([3],'b',[3]))
-nfa1=DFA(q,i,d,s,f)
-"""
+nfa2=DFA(q,i,d,s,f)
 
 
+#lecture03 p.23
 q = [('A'),('B'),('C'),('D'),('E')]
 i = [0,1]
 s=[('A')]
@@ -190,12 +217,19 @@ d.append(Delta(['E'],0,['F']))
 d.append(Delta(['E'],'e',['B']))
 d.append(Delta(['E'],'e',['C']))
 d.append(Delta(['F'],0,['D']))
-#d.append(Delta(['A'],0,['E']))
-nfa1=DFA(q,i,d,s,f)
+nfa3=DFA(q,i,d,s,f)
 
+
+#prints nfa
 print("NFA : ")
 nfa1.print()
 
+#prints converted dfa
 print("")
 print("->DFA : ")
-nfa2dfa(nfa1)
+dfa = nfa2dfa(nfa3)
+
+#read a string
+print("")
+result = dfa.read("01")
+print(result)
